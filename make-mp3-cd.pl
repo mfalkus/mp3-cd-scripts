@@ -17,6 +17,7 @@ my $playlistName = '';
 
 my $dir = '';
 my $dirOut = '';
+my $strip_digits;
 
 GetOptions(
     'd|directory=s' => \$dir,
@@ -24,6 +25,7 @@ GetOptions(
     'o|output=s'    => \$output_dir,
     'p|playlist=s'  => \$playlistName,
     'i|itunesxml=s' => \$itunesfile,
+    's|strip-digits'=> \$strip_digits,
 );
 
 # Trailing slashes are assumed later on, add here if not set
@@ -83,6 +85,10 @@ foreach my $loc (@in) {
 
     my $new_name = $name;
     $new_name =~ s/\.[^\.]+$/.mp3/ if $name !~ /\.mp3$/;
+
+    if ($strip_digits) {
+        $new_name =~ s/^\s*\d*\s*-?\s*//;
+    }
     my $out_full = $output_dir . $new_name;
 
     say "Processing $k / $count => $path$name";
@@ -91,7 +97,7 @@ foreach my $loc (@in) {
         unless (-e $out_full) {
             # say "$out_full doesn't exist";
             # MP3 already, copy straight to disc
-            system("cp","-n","$path$name","$output_dir");
+            system("cp","-n","$path$name","$out_full");
         }
     } else {
         if (! -e $out_full) {
