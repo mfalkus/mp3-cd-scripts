@@ -1,3 +1,4 @@
+#!/usr/bin/perl
 use warnings;
 use strict;
 
@@ -11,12 +12,11 @@ use URI::Escape;
 use feature qw(say);
 
 my $itunesfile;
-my $output_dir = '/Users/Martin/temp-disc.fpbf/';
-my $playlistName = 'Run - Geography'; #'Christmas';
+my $output_dir = './output-disc.fpbf/';
+my $playlistName = '';
 
-# Trailing slahes needed
-my $dir = ''; #'/Volumes/NO NAME/New Folder/';
-my $dirOut = ''; #'LondonGrammar/';
+my $dir = '';
+my $dirOut = '';
 
 GetOptions(
     'd|directory=s' => \$dir,
@@ -26,18 +26,15 @@ GetOptions(
     'i|itunesxml=s' => \$itunesfile,
 );
 
-
-if ($dirOut && $dirOut !~ m#/$#) {
-    $dirOut .= '/';
-}
-if ($dir && $dir !~ m#/$#) {
-    $dir .= '/';
-}
+# Trailing slashes are assumed later on, add here if not set
+$dirOut .= '/' if ($dirOut && $dirOut !~ m#/$#);
+$dir .= '/' if ($dir && $dir !~ m#/$#);
 
 my @in;
 if ($playlistName) {
     unless ($itunesfile) {
         my $username = `whoami`;
+        chomp($username);
         $itunesfile = "/Users/$username/Music/iTunes/iTunes Music Library.xml";
     }
     # Create library instance
@@ -68,8 +65,14 @@ if ($playlistName) {
     closedir(DIR);
 }
 
+if (scalar @in == 0) {
+    warn "No songs to work with. Supply a playlist name (-p) or input directory (-d).\n";
+}
+
 $output_dir .= $dirOut;
+$output_dir .= '/' if ($output_dir && $output_dir !~ m#/$#);
 system('mkdir', '-p', $output_dir) unless (-e $output_dir);
+warn "Working with " . scalar @in . " music files, outputting to => $output_dir\n";
 
 # Copy or convert each file...
 my $count = scalar @in;
