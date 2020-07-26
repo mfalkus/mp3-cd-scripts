@@ -36,4 +36,6 @@ Two options, either from an iTunes playlist or a directory of input files:
 ./make-mp3-cd.pl -d ../my-song-directory/here/ -o output_directory.fpbf
 ```
 
-For further details see this blog post.
+For further details about how this script came about see
+<a href="https://falkus.co/2020/07/itunes-playlist-to-mp3-cd">this blog
+post</a>.
