@@ -1,3 +1,4 @@
+#!/usr/bin/perl
 use warnings;
 use strict;
 
@@ -7,7 +8,9 @@ use Mac::iTunes::Library::XML;
 use URI::Escape;
 use feature qw(say);
 
-my $file = "/Users/Martin/Music/iTunes/iTunes Music Library.xml";
+my $user = `whoami`;
+chomp($user);
+my $file = "/Users/$user/Music/iTunes/iTunes Music Library.xml";
 
 # Create library instance
 my $library = Mac::iTunes::Library->new();
